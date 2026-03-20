@@ -306,19 +306,19 @@ app.get('/', (c) => {
     </head>
     <body class="bg-gray-50">
         <!-- Header -->
-        <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white shadow-lg">
+        <header class="header-gradient text-white shadow-lg">
             <div class="container mx-auto px-4 py-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold flex items-center gap-3">
+                        <h1 class="text-3xl font-display font-bold flex items-center gap-3">
                             <i class="fas fa-hospital"></i>
                             Senior Residences Europe
                         </h1>
-                        <p class="text-blue-100 mt-2">Europas umfassendste Datenbank für Seniorenresidenzen + CRM + AI</p>
+                        <p class="text-emerald-100 mt-2 font-sans">Europas umfassendste Datenbank für Seniorenresidenzen + CRM + AI</p>
                     </div>
-                    <button onclick="showIntelligentSearch()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium px-6 py-3 rounded-lg transition-all transform hover:scale-105 flex items-center gap-2 border border-white border-opacity-30">
+                    <button onclick="showIntelligentSearch()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-bold px-6 py-3 rounded-2xl transition-all transform hover:scale-105 flex items-center gap-2 border border-white border-opacity-30 shadow-lg">
                         <i class="fas fa-magic"></i>
-                        <span>KI-Suche</span>
+                        <span class="font-display">KI-Suche</span>
                     </button>
                 </div>
             </div>
@@ -357,26 +357,34 @@ app.get('/', (c) => {
 
         <!-- Stats Overview -->
         <div class="container mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="stats-container">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                    <div class="text-blue-100 text-sm mb-1">Gesamt</div>
-                    <div class="text-4xl font-bold" id="stat-total">-</div>
-                    <div class="text-xs text-blue-100 mt-1">Einrichtungen</div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-feed-item" id="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon emerald">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <div class="stat-value" id="stat-total">-</div>
+                    <div class="stat-label">Einrichtungen</div>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white">
-                    <div class="text-green-100 text-sm mb-1">Länder</div>
-                    <div class="text-4xl font-bold" id="stat-countries">-</div>
-                    <div class="text-xs text-green-100 mt-1">Abgedeckt</div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-globe-europe"></i>
+                    </div>
+                    <div class="stat-value" id="stat-countries">-</div>
+                    <div class="stat-label">Länder Abgedeckt</div>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-yellow-500 to-orange-500 text-white">
-                    <div class="text-yellow-100 text-sm mb-1">Ø Bewertung</div>
-                    <div class="text-4xl font-bold" id="stat-rating">-</div>
-                    <div class="text-xs text-yellow-100 mt-1">von 5.0</div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-value" id="stat-rating">-</div>
+                    <div class="stat-label">Ø Bewertung / 5.0</div>
                 </div>
-                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                    <div class="text-purple-100 text-sm mb-1">Bewertet</div>
-                    <div class="text-4xl font-bold" id="stat-rated">-</div>
-                    <div class="text-xs text-purple-100 mt-1">Einrichtungen</div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="stat-value" id="stat-rated">-</div>
+                    <div class="stat-label">Bewertet</div>
                 </div>
             </div>
 
