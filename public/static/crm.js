@@ -679,3 +679,219 @@ async function submitAIEvaluation(e) {
         alert('Fehler bei der KI-Bewertung: ' + (error.response?.data?.details || error.message));
     }
 }
+
+// ===== INTELLIGENT LLM SEARCH =====
+
+// Show intelligent search modal
+function showIntelligentSearch() {
+    const modal = `
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" id="intelligent-search-modal">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-magic text-purple-600 mr-3"></i>
+                    Intelligente Suche
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    Stelle der KI eine Frage über die Seniorenresidenzen. Sie wird die Datenbank analysieren und passende Einrichtungen finden.
+                </p>
+                
+                <form onsubmit="submitIntelligentSearch(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Deine Frage:</label>
+                        <textarea id="intelligent-query" class="w-full border-2 border-gray-300 focus:border-purple-500 rounded-lg px-4 py-3 outline-none transition-colors" rows="4" placeholder="z.B. 'Welche Residenzen in Deutschland haben mehr als 100 Plätze und sind gut bewertet?' oder 'Zeige mir Einrichtungen, die für digitale Kommunikationstools geeignet sind'" required></textarea>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+                        <h4 class="font-semibold text-purple-800 mb-2 flex items-center">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            Beispiel-Fragen:
+                        </h4>
+                        <ul class="text-sm text-gray-700 space-y-1">
+                            <li>• "Welche Residenzen haben E-Mail und Website?"</li>
+                            <li>• "Zeige große Einrichtungen in Frankreich"</li>
+                            <li>• "Finde technikaffine Residenzen mit gutem Budget"</li>
+                            <li>• "Welche sind für unser digitales Tool am besten geeignet?"</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" class="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 rounded-lg transition-all transform hover:scale-105">
+                            <i class="fas fa-magic mr-2"></i>KI-Suche starten
+                        </button>
+                        <button type="button" onclick="document.getElementById('intelligent-search-modal').remove()" class="px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 rounded-lg transition-colors">
+                            Abbrechen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modal);
+}
+
+// Submit intelligent search
+async function submitIntelligentSearch(e) {
+    e.preventDefault();
+    
+    const question = document.getElementById('intelligent-query').value;
+    const modal = document.getElementById('intelligent-search-modal');
+    
+    // Show loading state
+    modal.querySelector('form').innerHTML = `
+        <div class="text-center py-12">
+            <div class="relative inline-block">
+                <i class="fas fa-brain text-6xl text-purple-600 animate-pulse"></i>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-spinner fa-spin text-2xl text-white"></i>
+                </div>
+            </div>
+            <p class="text-lg text-gray-700 mt-6 font-medium">KI analysiert deine Frage...</p>
+            <p class="text-sm text-gray-500 mt-2">Dies kann 10-30 Sekunden dauern</p>
+            <div class="flex justify-center gap-2 mt-4">
+                <div class="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                <div class="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+        </div>
+    `;
+    
+    try {
+        const response = await axios.post('/api/crm/ai/query', { 
+            question,
+            filters: {}
+        });
+        
+        if (response.data.success) {
+            showIntelligentSearchResults(response.data);
+        } else {
+            throw new Error(response.data.error);
+        }
+    } catch (error) {
+        console.error('Intelligent search failed:', error);
+        modal.remove();
+        alert('Fehler bei der intelligenten Suche: ' + (error.response?.data?.details || error.message));
+    }
+}
+
+// Show intelligent search results
+function showIntelligentSearchResults(data) {
+    document.getElementById('intelligent-search-modal').remove();
+    
+    const resultsModal = `
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" id="search-results-modal">
+            <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                <!-- Header -->
+                <div class="sticky top-0 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-4 flex justify-between items-center z-10">
+                    <div>
+                        <h3 class="text-2xl font-bold flex items-center">
+                            <i class="fas fa-sparkles mr-3"></i>
+                            KI-Suchergebnisse
+                        </h3>
+                        <p class="text-purple-100 mt-1 text-sm">${data.total_analyzed} Einrichtungen analysiert</p>
+                    </div>
+                    <button onclick="document.getElementById('search-results-modal').remove()" class="text-white hover:text-purple-200 transition-colors">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <!-- AI Answer -->
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-500 rounded-r-lg p-6 mb-6">
+                        <h4 class="font-bold text-lg text-purple-900 mb-3 flex items-center">
+                            <i class="fas fa-comment-dots mr-2"></i>
+                            KI-Antwort:
+                        </h4>
+                        <p class="text-gray-800 leading-relaxed">${data.answer}</p>
+                        ${data.reasoning ? `
+                            <details class="mt-4">
+                                <summary class="cursor-pointer text-sm text-purple-700 font-medium hover:text-purple-900">
+                                    <i class="fas fa-info-circle mr-1"></i>Reasoning anzeigen
+                                </summary>
+                                <p class="mt-2 text-sm text-gray-600 pl-4 border-l-2 border-purple-300">${data.reasoning}</p>
+                            </details>
+                        ` : ''}
+                    </div>
+
+                    <!-- Empfohlene Filter -->
+                    ${data.filter_suggestions && Object.keys(data.filter_suggestions).length > 0 ? `
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                            <h4 class="font-semibold text-blue-900 mb-2 flex items-center">
+                                <i class="fas fa-filter mr-2"></i>
+                                Empfohlene Filter:
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${data.filter_suggestions.countries ? data.filter_suggestions.countries.map(c => 
+                                    `<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Land: ${c}</span>`
+                                ).join('') : ''}
+                                ${data.filter_suggestions.has_email ? '<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"><i class="fas fa-envelope mr-1"></i>Hat E-Mail</span>' : ''}
+                                ${data.filter_suggestions.has_website ? '<span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm"><i class="fas fa-globe mr-1"></i>Hat Website</span>' : ''}
+                                ${data.filter_suggestions.min_capacity ? `<span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">Min. ${data.filter_suggestions.min_capacity} Plätze</span>` : ''}
+                                ${data.filter_suggestions.min_rating ? `<span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">⭐ Min. ${data.filter_suggestions.min_rating}</span>` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Results -->
+                    <div>
+                        <h4 class="font-bold text-lg mb-4 flex items-center justify-between">
+                            <span>
+                                <i class="fas fa-list-check mr-2 text-purple-600"></i>
+                                Passende Einrichtungen (${data.matching_residences.length})
+                            </span>
+                            <button onclick="exportAIResults()" class="text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                <i class="fas fa-download mr-2"></i>Als CSV exportieren
+                            </button>
+                        </h4>
+                        
+                        ${data.matching_residences.length > 0 ? `
+                            <div class="space-y-3">
+                                ${data.matching_residences.map(residence => `
+                                    <div class="bg-white border-2 border-gray-200 hover:border-purple-300 rounded-lg p-4 transition-all hover:shadow-lg">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div class="flex-1">
+                                                <h5 class="font-semibold text-lg text-gray-800">${residence.name}</h5>
+                                                <p class="text-sm text-gray-600 mt-1">
+                                                    <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
+                                                    ${residence.city}, ${residence.country}
+                                                </p>
+                                            </div>
+                                            ${residence.rating ? `
+                                                <div class="bg-yellow-50 px-3 py-1 rounded-full">
+                                                    <i class="fas fa-star text-yellow-500"></i>
+                                                    <span class="font-semibold ml-1">${residence.rating.toFixed(1)}</span>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                        <div class="flex flex-wrap gap-2 mt-3">
+                                            ${residence.capacity ? `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${residence.capacity} Plätze</span>` : ''}
+                                            ${residence.email ? '<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded"><i class="fas fa-envelope mr-1"></i>E-Mail</span>' : ''}
+                                            ${residence.website ? '<span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded"><i class="fas fa-globe mr-1"></i>Website</span>' : ''}
+                                            ${residence.digital_readiness_score ? `<span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">Digital: ${residence.digital_readiness_score}/100</span>` : ''}
+                                        </div>
+                                        <div class="mt-3 pt-3 border-t border-gray-100">
+                                            <button onclick="showResidenceDetails('${residence.id}')" class="text-sm bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                                <i class="fas fa-info-circle mr-1"></i>Details ansehen
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="text-center py-12 text-gray-500">
+                                <i class="fas fa-search-minus text-4xl mb-3"></i>
+                                <p>Keine passenden Einrichtungen gefunden</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', resultsModal);
+}
+
+// Export AI results (placeholder)
+function exportAIResults() {
+    alert('CSV-Export wird implementiert...');
+}

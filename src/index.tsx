@@ -266,44 +266,86 @@ app.get('/', (c) => {
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <style>
-            #map { height: 400px; width: 100%; }
-            .stat-card { @apply bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow; }
+            #map { height: 400px; width: 100%; border-radius: 0.5rem; }
+            
+            .stat-card { 
+                @apply rounded-xl shadow-lg p-6 transition-all duration-300;
+            }
+            .stat-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            
+            /* Animations */
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .fade-in {
+                animation: fadeIn 0.5s ease-out;
+            }
+            
+            /* Custom scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
         </style>
     </head>
     <body class="bg-gray-50">
         <!-- Header -->
-        <header class="bg-blue-600 text-white shadow-lg">
+        <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white shadow-lg">
             <div class="container mx-auto px-4 py-6">
-                <h1 class="text-3xl font-bold flex items-center gap-3">
-                    <i class="fas fa-hospital"></i>
-                    Senior Residences Europe
-                </h1>
-                <p class="text-blue-100 mt-2">Europas umfassendste Datenbank für Seniorenresidenzen</p>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold flex items-center gap-3">
+                            <i class="fas fa-hospital"></i>
+                            Senior Residences Europe
+                        </h1>
+                        <p class="text-blue-100 mt-2">Europas umfassendste Datenbank für Seniorenresidenzen + CRM + AI</p>
+                    </div>
+                    <button onclick="showIntelligentSearch()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-medium px-6 py-3 rounded-lg transition-all transform hover:scale-105 flex items-center gap-2 border border-white border-opacity-30">
+                        <i class="fas fa-magic"></i>
+                        <span>KI-Suche</span>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- Stats Overview -->
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="stats-container">
-                <div class="stat-card">
-                    <div class="text-gray-500 text-sm mb-1">Gesamt</div>
-                    <div class="text-3xl font-bold text-blue-600" id="stat-total">-</div>
-                    <div class="text-xs text-gray-400 mt-1">Einrichtungen</div>
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                    <div class="text-blue-100 text-sm mb-1">Gesamt</div>
+                    <div class="text-4xl font-bold" id="stat-total">-</div>
+                    <div class="text-xs text-blue-100 mt-1">Einrichtungen</div>
                 </div>
-                <div class="stat-card">
-                    <div class="text-gray-500 text-sm mb-1">Länder</div>
-                    <div class="text-3xl font-bold text-green-600" id="stat-countries">-</div>
-                    <div class="text-xs text-gray-400 mt-1">Abgedeckt</div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white">
+                    <div class="text-green-100 text-sm mb-1">Länder</div>
+                    <div class="text-4xl font-bold" id="stat-countries">-</div>
+                    <div class="text-xs text-green-100 mt-1">Abgedeckt</div>
                 </div>
-                <div class="stat-card">
-                    <div class="text-gray-500 text-sm mb-1">Ø Bewertung</div>
-                    <div class="text-3xl font-bold text-yellow-600" id="stat-rating">-</div>
-                    <div class="text-xs text-gray-400 mt-1">von 5.0</div>
+                <div class="stat-card bg-gradient-to-br from-yellow-500 to-orange-500 text-white">
+                    <div class="text-yellow-100 text-sm mb-1">Ø Bewertung</div>
+                    <div class="text-4xl font-bold" id="stat-rating">-</div>
+                    <div class="text-xs text-yellow-100 mt-1">von 5.0</div>
                 </div>
-                <div class="stat-card">
-                    <div class="text-gray-500 text-sm mb-1">Bewertet</div>
-                    <div class="text-3xl font-bold text-purple-600" id="stat-rated">-</div>
-                    <div class="text-xs text-gray-400 mt-1">Einrichtungen</div>
+                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                    <div class="text-purple-100 text-sm mb-1">Bewertet</div>
+                    <div class="text-4xl font-bold" id="stat-rated">-</div>
+                    <div class="text-xs text-purple-100 mt-1">Einrichtungen</div>
                 </div>
             </div>
 
