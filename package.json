@@ -16,7 +16,9 @@
     "test": "curl http://localhost:3000"
   },
   "dependencies": {
-    "hono": "^4.12.8"
+    "hono": "^4.12.8",
+    "js-yaml": "^4.1.1",
+    "openai": "^6.32.0"
   },
   "devDependencies": {
     "@hono/vite-build": "^1.2.0",
