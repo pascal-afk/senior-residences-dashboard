@@ -13,20 +13,29 @@ import yaml from 'js-yaml'
 import { homedir } from 'os'
 import { join } from 'path'
 
-// Load LLM configuration
-const configPath = join(homedir(), '.genspark_llm.yaml')
-let config = null
+// Lazy OpenAI client initialization
+let clientInstance: OpenAI | null = null
 
-if (fs.existsSync(configPath)) {
-  const fileContents = fs.readFileSync(configPath, 'utf8')
-  config = yaml.load(fileContents)
+function getOpenAIClient(): OpenAI {
+  if (clientInstance) return clientInstance
+
+  // Load LLM configuration
+  const configPath = join(homedir(), '.genspark_llm.yaml')
+  let config = null
+
+  if (fs.existsSync(configPath)) {
+    const fileContents = fs.readFileSync(configPath, 'utf8')
+    config = yaml.load(fileContents)
+  }
+
+  // Initialize OpenAI client
+  clientInstance = new OpenAI({
+    apiKey: config?.openai?.api_key || process.env.OPENAI_API_KEY || process.env.GENSPARK_TOKEN,
+    baseURL: config?.openai?.base_url || process.env.OPENAI_BASE_URL,
+  })
+
+  return clientInstance
 }
-
-// Initialize OpenAI client
-const client = new OpenAI({
-  apiKey: config?.openai?.api_key || process.env.OPENAI_API_KEY || process.env.GENSPARK_TOKEN,
-  baseURL: config?.openai?.base_url || process.env.OPENAI_BASE_URL,
-})
 
 /**
  * LLM Agent: Analyzes residences and provides reasoning
@@ -74,6 +83,7 @@ Antworte im folgenden JSON-Format:
 }`
 
     try {
+      const client = getOpenAIClient()
       const completion = await client.chat.completions.create({
         model: this.model,
         messages: [
@@ -157,6 +167,7 @@ Antworte im JSON-Format:
 }`
 
     try {
+      const client = getOpenAIClient()
       const completion = await client.chat.completions.create({
         model: this.model,
         messages: [
@@ -232,6 +243,7 @@ Antworte im JSON-Format:
 }`
 
     try {
+      const client = getOpenAIClient()
       const completion = await client.chat.completions.create({
         model: this.model,
         messages: [

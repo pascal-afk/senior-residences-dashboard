@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/cloudflare-workers'
+import crm from './crm-api'
 
 type Bindings = {
   DB: D1Database
@@ -13,6 +14,9 @@ app.use('/api/*', cors())
 
 // Serve static files
 app.use('/static/*', serveStatic({ root: './public' }))
+
+// Mount CRM & AI routes
+app.route('/api/crm', crm)
 
 // ===== API ROUTES =====
 

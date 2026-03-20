@@ -4,10 +4,15 @@
  */
 
 import { Hono } from 'hono'
-import { FrontendAgent } from './mcp-agents'
 
 type Bindings = {
   DB: D1Database
+}
+
+// Lazy import for MCP agents to avoid initialization errors
+async function getFrontendAgent(DB: D1Database) {
+  const { FrontendAgent } = await import('./mcp-agents')
+  return new FrontendAgent(DB)
 }
 
 const crm = new Hono<{ Bindings: Bindings }>()
@@ -193,7 +198,7 @@ crm.post('/ai/evaluate/:residence_id', async (c) => {
   const { criteria } = await c.req.json()
 
   try {
-    const agent = new FrontendAgent(DB)
+    const agent = await getFrontendAgent(DB)
     const result = await agent.evaluateResidence(residence_id, criteria)
 
     return c.json(result)
@@ -208,7 +213,7 @@ crm.post('/ai/evaluate-batch', async (c) => {
   const { residence_ids, criteria } = await c.req.json()
 
   try {
-    const agent = new FrontendAgent(DB)
+    const agent = await getFrontendAgent(DB)
     const results = await agent.evaluateBatch(residence_ids, criteria)
 
     return c.json({ results, total: results.length })
@@ -223,7 +228,7 @@ crm.post('/ai/query', async (c) => {
   const { question, filters } = await c.req.json()
 
   try {
-    const agent = new FrontendAgent(DB)
+    const agent = await getFrontendAgent(DB)
     const result = await agent.intelligentQuery(question, filters || {})
 
     return c.json(result)
@@ -282,7 +287,7 @@ crm.post('/ai/auto-evaluate', async (c) => {
     const residence_ids = result.results.map(r => r.id)
 
     // Start batch evaluation
-    const agent = new FrontendAgent(DB)
+    const agent = await getFrontendAgent(DB)
     const evaluations = await agent.evaluateBatch(residence_ids, criteria)
 
     return c.json({
