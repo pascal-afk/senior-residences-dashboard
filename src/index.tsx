@@ -306,17 +306,17 @@ app.get('/', (c) => {
     </head>
     <body class="bg-gray-50">
         <!-- Header -->
-        <header class="header-gradient text-white shadow-lg">
+        <header class="header-gradient shadow-lg">
             <div class="container mx-auto px-4 py-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-3xl font-display font-bold flex items-center gap-3">
+                        <h1 class="text-3xl font-display font-bold flex items-center gap-3 text-white drop-shadow-sm">
                             <i class="fas fa-hospital"></i>
                             Senior Residences Europe
                         </h1>
-                        <p class="text-emerald-100 mt-2 font-sans">Europas umfassendste Datenbank für Seniorenresidenzen + CRM + AI</p>
+                        <p class="text-white text-opacity-90 mt-2 font-sans drop-shadow-sm">Europas umfassendste Datenbank für Seniorenresidenzen + CRM + AI</p>
                     </div>
-                    <button onclick="showIntelligentSearch()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm text-white font-bold px-6 py-3 rounded-2xl transition-all transform hover:scale-105 flex items-center gap-2 border border-white border-opacity-30 shadow-lg">
+                    <button onclick="showIntelligentSearch()" class="bg-white text-emerald-600 hover:bg-emerald-50 font-bold px-6 py-3 rounded-2xl transition-all transform hover:scale-105 flex items-center gap-2 shadow-lg">
                         <i class="fas fa-magic"></i>
                         <span class="font-display">KI-Suche</span>
                     </button>

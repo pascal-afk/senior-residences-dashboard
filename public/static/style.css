@@ -217,14 +217,16 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--color-feed-text-main);
   margin-bottom: 0.25rem;
+  line-height: 1;
 }
 
 .stat-label {
   font-size: 10px;
-  color: var(--color-feed-text-muted);
+  color: var(--color-feed-text-main);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  opacity: 0.6;
 }
 
 /* ===== Filter Section ===== */
