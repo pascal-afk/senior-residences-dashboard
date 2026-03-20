@@ -324,6 +324,37 @@ app.get('/', (c) => {
             </div>
         </header>
 
+        <!-- Bulk Action Bar (Hidden by default) -->
+        <div id="bulk-action-bar" class="hidden fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xl z-40 border-t-4 border-blue-400">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-check-double text-2xl"></i>
+                        <div>
+                            <div class="font-bold text-lg">
+                                <span id="selected-count">0</span> Einrichtungen ausgewählt
+                            </div>
+                            <div class="text-sm text-blue-100">Nutzen Sie Bulk-Aktionen für schnelleres Arbeiten</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="showBulkContactModal()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm px-6 py-2.5 rounded-lg font-semibold transition-all transform hover:scale-105 border border-white border-opacity-30">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Massen-Kontakt
+                        </button>
+                        <button onclick="selectAllResidences()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm px-4 py-2.5 rounded-lg font-semibold transition-all border border-white border-opacity-30">
+                            <i class="fas fa-check-square mr-2"></i>
+                            Alle
+                        </button>
+                        <button onclick="deselectAllResidences()" class="bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm px-4 py-2.5 rounded-lg font-semibold transition-all border border-white border-opacity-30">
+                            <i class="fas fa-times mr-2"></i>
+                            Abwählen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Stats Overview -->
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="stats-container">
@@ -456,6 +487,7 @@ app.get('/', (c) => {
 
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script src="/static/app.js"></script>
+        <script src="/static/contact-management.js"></script>
         <script src="/static/crm.js"></script>
     </body>
     </html>

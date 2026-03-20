@@ -121,82 +121,93 @@ function displayResults(results) {
     }
     
     container.innerHTML = results.map(residence => `
-        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start mb-2">
-                <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-800">${residence.name}</h3>
-                    <div class="text-sm text-gray-600 mt-1">
+        <div class="residence-card group">
+            <!-- Checkbox for Bulk Selection -->
+            <div class="absolute top-4 left-4 z-10">
+                <input type="checkbox" 
+                       class="residence-checkbox w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                       data-residence-id="${residence.id}"
+                       onclick="toggleResidenceSelection('${residence.id}')">
+            </div>
+            
+            <!-- Header -->
+            <div class="residence-header">
+                <div class="flex-1 pl-8">
+                    <h3 class="residence-name">${residence.name}</h3>
+                    <div class="residence-address">
                         <i class="fas fa-map-marker-alt text-red-500 mr-1"></i>
                         ${residence.full_address || [residence.city, residence.country].filter(Boolean).join(', ')}
                     </div>
                 </div>
                 ${residence.rating ? `
-                    <div class="flex items-center gap-1 bg-yellow-50 px-3 py-1 rounded-full">
-                        <i class="fas fa-star text-yellow-500"></i>
-                        <span class="font-semibold">${residence.rating.toFixed(1)}</span>
+                    <div class="rating-badge">
+                        <i class="fas fa-star"></i>
+                        <span>${residence.rating.toFixed(1)}</span>
                     </div>
                 ` : ''}
             </div>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600 mb-3">
+            <!-- Info Grid -->
+            <div class="info-grid">
                 ${residence.facility_type ? `
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-building text-blue-500"></i>
+                    <div class="info-item">
+                        <i class="fas fa-building"></i>
                         <span>${residence.facility_type}</span>
                     </div>
                 ` : ''}
                 ${residence.capacity ? `
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-users text-green-500"></i>
+                    <div class="info-item">
+                        <i class="fas fa-users"></i>
                         <span>${residence.capacity} Plätze</span>
                     </div>
                 ` : ''}
                 ${residence.operator ? `
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-briefcase text-purple-500"></i>
+                    <div class="info-item">
+                        <i class="fas fa-briefcase"></i>
                         <span>${residence.operator}</span>
                     </div>
                 ` : ''}
                 ${residence.price_min && residence.price_max ? `
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-euro-sign text-orange-500"></i>
-                        <span>${residence.price_min}-${residence.price_max} ${residence.price_currency || 'EUR'}/Monat</span>
+                    <div class="info-item">
+                        <i class="fas fa-euro-sign"></i>
+                        <span>${residence.price_min}-${residence.price_max} ${residence.price_currency || 'EUR'}/M</span>
                     </div>
                 ` : ''}
             </div>
             
-            <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+            <!-- Quick Contact Buttons -->
+            <div class="contact-buttons">
                 ${residence.phone ? `
-                    <a href="tel:${residence.phone}" 
-                       class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded-md transition-colors text-sm">
+                    <button onclick="quickContact('${residence.id}', 'phone')" 
+                            class="contact-btn phone" title="Schnell anrufen">
                         <i class="fas fa-phone"></i>
-                        ${residence.phone}
-                    </a>
+                        <span class="hidden sm:inline">Anrufen</span>
+                    </button>
                 ` : ''}
                 ${residence.email ? `
-                    <a href="mailto:${residence.email}" 
-                       class="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 px-3 py-1 rounded-md transition-colors text-sm">
+                    <button onclick="quickContact('${residence.id}', 'email')" 
+                            class="contact-btn email" title="Schnell E-Mail">
                         <i class="fas fa-envelope"></i>
-                        E-Mail
-                    </a>
+                        <span class="hidden sm:inline">E-Mail</span>
+                    </button>
                 ` : ''}
                 ${residence.website ? `
                     <a href="${residence.website}" target="_blank" rel="noopener"
-                       class="flex items-center gap-2 bg-purple-50 hover:bg-purple-100 text-purple-700 px-3 py-1 rounded-md transition-colors text-sm">
+                       class="contact-btn website" title="Website besuchen">
                         <i class="fas fa-globe"></i>
-                        Website
+                        <span class="hidden sm:inline">Website</span>
                     </a>
                 ` : ''}
                 ${residence.lat && residence.lon ? `
                     <a href="https://www.google.com/maps?q=${residence.lat},${residence.lon}" target="_blank" rel="noopener"
-                       class="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1 rounded-md transition-colors text-sm">
+                       class="contact-btn maps" title="In Google Maps öffnen">
                         <i class="fas fa-map-marked-alt"></i>
-                        Google Maps
+                        <span class="hidden sm:inline">Maps</span>
                     </a>
                 ` : ''}
                 <button onclick="showResidenceDetails('${residence.id}')"
-                       class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1 rounded-md transition-colors text-sm font-medium">
-                    <i class="fas fa-info-circle"></i>
+                        class="contact-btn crm" title="CRM Details öffnen">
+                    <i class="fas fa-user-tie"></i>
                     CRM Details
                 </button>
                     </a>
