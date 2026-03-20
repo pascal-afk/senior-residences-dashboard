@@ -385,8 +385,36 @@ app.get('/', (c) => {
             </div>
         </div>
 
+        <!-- Modal Container for CRM -->
+        <div id="modal-container"></div>
+
+        <!-- Custom Styles for CRM -->
+        <style>
+            .crm-tab {
+                padding: 0.75rem 1rem;
+                border-bottom: 2px solid transparent;
+                color: #6B7280;
+                transition: all 0.2s;
+                cursor: pointer;
+                background: none;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+            }
+            .crm-tab:hover {
+                color: #3B82F6;
+                border-bottom-color: #BFDBFE;
+            }
+            .crm-tab-active {
+                color: #3B82F6;
+                border-bottom-color: #3B82F6;
+                font-weight: 600;
+            }
+        </style>
+
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script src="/static/app.js"></script>
+        <script src="/static/crm.js"></script>
     </body>
     </html>
   `)

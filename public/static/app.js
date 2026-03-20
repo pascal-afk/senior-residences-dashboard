@@ -194,6 +194,13 @@ function displayResults(results) {
                         Google Maps
                     </a>
                 ` : ''}
+                <button onclick="showResidenceDetails('${residence.id}')"
+                       class="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1 rounded-md transition-colors text-sm font-medium">
+                    <i class="fas fa-info-circle"></i>
+                    CRM Details
+                </button>
+                    </a>
+                ` : ''}
             </div>
         </div>
     `).join('');
